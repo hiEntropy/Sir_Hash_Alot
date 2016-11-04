@@ -17,27 +17,45 @@ def hmmm_Hash(file, target, hash_algo):
             temp=""
             for y in x:
                 temp+=y
-            temp = temp.encode('utf8')
             if hash_algo == 'sha256':
-                m = hashlib.sha256()
-                m.update(temp)
-                hash_result = m.hexdigest()
+                hash_result = get_sha256_digest(temp)
                 if hash_result == target:
                     print("MATCH:\n"+str(temp))
                     exit()
             elif hash_algo == 'md5':
-                m = hashlib.md5()
-                m.update(temp)
-                if m.hexdigest() == target:
+                hash_result = get_md5_digest(temp)
+                if hash_result == target:
                     print("MATCH:\n" + str(temp))
                     exit()
     print("NO match found")
 
+def get_sha256_digest(string):
+    m = hashlib.sha256()
+    m.update(string.encode("utf8"))
+    return m.hexdigest()
+
+def get_md5_digest(string):
+    m = hashlib.md5()
+    m.update(string.encode("utf8"))
+    return m.hexdigest()
 
 def main():
     hash_algo="sha256"
     hash =""
     file=None
+    if '-gethash' in sys.argv and sys.argv.index('-gethash')+1 < len(sys.argv):
+        if "-algo" in sys.argv and sys.argv.index('-algo')+1 < len(sys.argv):
+            hash_algo = sys.argv[sys.argv.index('-algo') + 1]
+        else:
+            exit()
+        if hash_algo == "sha256":
+            print(get_sha256_digest(sys.argv[sys.argv.index('-gethash') + 1]))
+            exit()
+        elif hash_algo == "md5":
+            print(get_md5_digest(sys.argv[sys.argv.index('-gethash') + 1]))
+            exit()
+        else:
+            exit()
     if "-hash" in sys.argv and sys.argv.index('-hash')+1 < len(sys.argv):
         hash = sys.argv[sys.argv.index('-hash')+1]
     if "-algo" in sys.argv and sys.argv.index('-algo')+1 < len(sys.argv):
