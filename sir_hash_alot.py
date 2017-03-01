@@ -1,6 +1,8 @@
+#!/usr/bin/python3.6
 import itertools
 import hashlib
 import sys
+import argparse
 
 
 def hmmm_Hash(file, target, hash_algo):
@@ -40,33 +42,27 @@ def get_md5_digest(string):
     return m.hexdigest()
 
 def main():
-    hash_algo="sha256"
-    hash =""
-    file=None
-    if '-gethash' in sys.argv and sys.argv.index('-gethash')+1 < len(sys.argv):
-        if "-algo" in sys.argv and sys.argv.index('-algo')+1 < len(sys.argv):
-            hash_algo = sys.argv[sys.argv.index('-algo') + 1]
-        else:
-            exit()
-        if hash_algo == "sha256":
-            print(get_sha256_digest(sys.argv[sys.argv.index('-gethash') + 1]))
-            exit()
-        elif hash_algo == "md5":
-            print(get_md5_digest(sys.argv[sys.argv.index('-gethash') + 1]))
-            exit()
-        else:
-            exit()
-    if "-hash" in sys.argv and sys.argv.index('-hash')+1 < len(sys.argv):
-        hash = sys.argv[sys.argv.index('-hash')+1]
-    if "-algo" in sys.argv and sys.argv.index('-algo')+1 < len(sys.argv):
-        hash_algo = sys.argv[sys.argv.index('-algo') + 1]
-    if "-file" in sys.argv and sys.argv.index('-file')+1 < len(sys.argv):
-        file = sys.argv[sys.argv.index('-file') + 1]
-    if file == None:
-        print("must have a file of seed data newline delimited")
-    if hash == None:
-        print('Must have a -hash parameter to compare to')
-    if hash is not None and file is not None:
-        hmmm_Hash(file,hash,hash_algo)
+    parser = argparse.ArgumentParser(description='')
+    parser.add_argument('-gethash', action='store', help='print the hash of a given string')
+    parser.add_argument('-algo', action='store', default="sha256", help='use the given hashing algorithm')
+    parser.add_argument('-file', action='store', help='seed data file (newline delimited)')
+    parser.add_argument('-hash', action='store')
+    args = parser.parse_args();
+
+    if args.gethash:
+        # This used to exit if there was no algo arg. Defaults to "sha256" now
+        if args.algo == "sha256":
+            print(get_sha256_digest(args.gethash))
+        elif args.algo == "md5":
+            print(get_md5_digest(args.gethash))
+        else: 
+            print("Invalid algorithm")
+        exit()
+    if args.file == None:
+        print('must have a file of seed data newline delimited')
+    if args.hash == None:
+        print("Must have a -hash parameter to compare to")
+    if args.hash is not None and args.file is not None:
+        hmmm_Hash(args.file,args.hash,args.algo)
     return
 main()
