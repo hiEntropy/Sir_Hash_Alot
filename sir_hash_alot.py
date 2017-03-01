@@ -42,8 +42,8 @@ def get_md5_digest(string):
 
 def main():
     parser = argparse.ArgumentParser(description='')
-    parser.add_argument('-gethash', action='store')
-    parser.add_argument('-algo', action='store', default="sha256")
+    parser.add_argument('-gethash', action='store', help='print the hash of a given string')
+    parser.add_argument('-algo', action='store', default="sha256", help='use the given hashing algorithm')
     parser.add_argument('-file', action='store', help='seed data file (newline delimited)')
     parser.add_argument('-hash', action='store')
     args = parser.parse_args();
