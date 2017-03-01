@@ -1,3 +1,4 @@
+#!/usr/bin/python3.6
 import itertools
 import hashlib
 import sys
